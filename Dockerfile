@@ -23,10 +23,7 @@ RUN 	mkdir /src && \
 	cmake .. && \
 	make && \
 	make install && \
-	make rebuild_cache && \
-	openvas-mkcert -f -q && \
-	openvas-mkcert-client -n -i && \
-	openvas-nvt-sync
+	make rebuild_cache 
 
 RUN     cd /src && \
         wget http://wald.intevation.org/frs/download.php/2270/openvas-manager-6.0.7.tar.gz -O openvas-manager.tar.gz 2> /dev/null && \
@@ -39,12 +36,12 @@ RUN     cd /src && \
         make install && \
         make rebuild_cache && \
         cd / && \
-        rm -rf /src && \
-        openvas-scapdata-sync && \
-        openvasmd --create-user=${OPENVAS_ADMIN_USER} --role=Admin && \
-        openvasmd --user=${OPENVAS_ADMIN_USER} --new-password=${OPENVAS_ADMIN_PASSWORD}
+        rm -rf /src 
+        #openvas-scapdata-sync && \
+        #openvasmd --create-user=${OPENVAS_ADMIN_USER} --role=Admin && \
+        #openvasmd --user=${OPENVAS_ADMIN_USER} --new-password=${OPENVAS_ADMIN_PASSWORD}
 
-ENTRYPOINT ["openvassd", "-f"]
+RUN 	ldconfig
 
 EXPOSE 9391
 
