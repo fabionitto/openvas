@@ -37,11 +37,20 @@ RUN     cd /src && \
         make rebuild_cache && \
         cd / && \
         rm -rf /src 
-        #openvas-scapdata-sync && \
-        #openvasmd --create-user=${OPENVAS_ADMIN_USER} --role=Admin && \
-        #openvasmd --user=${OPENVAS_ADMIN_USER} --new-password=${OPENVAS_ADMIN_PASSWORD}
 
 RUN 	ldconfig
+RUN	openvas-mkcert -q -f && \
+	openvas-mkcert-client -n -i
+
+RUN	openvas-nvt-sync
+RUN	sed -i "s/SPLIT_PART_SIZE=0/SPLIT_PART_SIZE=2048/g" `which openvas-scapdata-sync` && \
+	openvas-scapdata-sync
+RUN	openvas-certdata-sync
+
+RUN	openvasmd --create-user=${OPENVAS_ADMIN_USER} --role=Admin && \
+	openvasmd --user=${OPENVAS_ADMIN_USER} --new-password=${OPENVAS_ADMIN_PASSWORD}
 
 EXPOSE 9391
+
+COPY start.sh /home/coreos/
 
