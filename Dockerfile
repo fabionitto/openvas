@@ -47,7 +47,9 @@ RUN	sed -i "s/SPLIT_PART_SIZE=0/SPLIT_PART_SIZE=2048/g" `which openvas-scapdata-
 	openvas-scapdata-sync
 RUN	openvas-certdata-sync
 
-RUN	openvasmd --create-user=${OPENVAS_ADMIN_USER} --role=Admin && \
+RUN	openvassd && \
+	openvasmd --rebuild -v --progress && \
+	openvasmd --create-user=${OPENVAS_ADMIN_USER} --role=Admin && \
 	openvasmd --user=${OPENVAS_ADMIN_USER} --new-password=${OPENVAS_ADMIN_PASSWORD}
 
 EXPOSE 9391
